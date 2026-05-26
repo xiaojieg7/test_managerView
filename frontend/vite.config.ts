@@ -4,6 +4,7 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [vue()],
+  base: '/test_managerView/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src')
