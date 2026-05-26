@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.property.mapper.OwnerMapper">
+    <select id="selectOwnerPage" resultType="com.property.entity.Owner">
+        SELECT o.*, u.username, u.real_name as realName, u.phone, u.email
+        FROM owner o
+        LEFT JOIN sys_user u ON o.user_id = u.id
+        <where>
+            <if test="building != null and building != ''">
+                AND o.building = #{building}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (u.real_name LIKE CONCAT('%', #{keyword}, '%') OR u.username LIKE CONCAT('%', #{keyword}, '%') OR o.room_number LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY o.create_time DESC
+    </select>
+</mapper>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.property.mapper.PaymentMapper">
+    <select id="selectPaymentPage" resultType="com.property.entity.Payment">
+        SELECT p.*,
+               u.real_name as ownerName,
+               o.building as ownerBuilding,
+               o.unit as ownerUnit,
+               o.room_number as ownerRoomNumber
+        FROM payment p
+        LEFT JOIN owner o ON p.owner_id = o.id
+        LEFT JOIN sys_user u ON o.user_id = u.id
+        <where>
+            <if test="ownerId != null">
+                AND p.owner_id = #{ownerId}
+            </if>
+            <if test="status != null and status != ''">
+                AND p.status = #{status}
+            </if>
+            <if test="period != null and period != ''">
+                AND p.period = #{period}
+            </if>
+        </where>
+        ORDER BY p.create_time DESC
+    </select>
+</mapper>

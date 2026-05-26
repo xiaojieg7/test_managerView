@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.property.mapper.RepairMapper">
+    <select id="selectRepairPage" resultType="com.property.entity.Repair">
+        SELECT r.*, 
+               u.real_name as ownerName,
+               o.building as ownerBuilding,
+               o.unit as ownerUnit,
+               o.room_number as ownerRoomNumber,
+               ru.real_name as repairerName
+        FROM repair r
+        LEFT JOIN owner o ON r.owner_id = o.id
+        LEFT JOIN sys_user u ON o.user_id = u.id
+        LEFT JOIN sys_user ru ON r.repairer_id = ru.id
+        <where>
+            <if test="ownerId != null">
+                AND r.owner_id = #{ownerId}
+            </if>
+            <if test="repairerId != null">
+                AND r.repairer_id = #{repairerId}
+            </if>
+            <if test="status != null and status != ''">
+                AND r.status = #{status}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (r.title LIKE CONCAT('%', #{keyword}, '%') OR r.description LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY r.create_time DESC
+    </select>
+</mapper>
